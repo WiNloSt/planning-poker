@@ -48,8 +48,7 @@ const App = () => (
     <AppStyles>
       <nav>
         <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-        <Link to="/blog">Blog</Link>
+        <Link to="/result">Result</Link>
       </nav>
       <div className="content">
         <Routes />
