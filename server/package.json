@@ -1,0 +1,12 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "My Graphcool Service",
+  "devDependencies": {
+    "graphcool": "^0.11.5"
+  },
+  "scripts": {
+    "start": "graphcool local up",
+    "deploy": "graphcool deploy"
+  }
+}

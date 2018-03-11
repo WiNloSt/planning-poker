@@ -2,8 +2,12 @@ import React from 'react'
 import { Router, Link } from 'react-static'
 import styled, { injectGlobal } from 'styled-components'
 import { hot } from 'react-hot-loader'
-//
 import Routes from 'react-static-routes'
+import fetch from 'node-fetch'
+import { ApolloClient } from 'apollo-client'
+import { HttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { ApolloProvider } from 'react-apollo'
 
 injectGlobal`
   body {
@@ -43,17 +47,27 @@ const AppStyles = styled.div`
   }
 `
 
+const client = new ApolloClient({
+  link: new HttpLink({
+    fetch,
+    uri: 'https://api.graph.cool/simple/v1/cjeml1rny28ak0169qoh19mx6',
+  }),
+  cache: new InMemoryCache(),
+})
+
 const App = () => (
   <Router>
-    <AppStyles>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/result">Result</Link>
-      </nav>
-      <div className="content">
-        <Routes />
-      </div>
-    </AppStyles>
+    <ApolloProvider client={client}>
+      <AppStyles>
+        <nav>
+          <Link to="/">Home</Link>
+          <Link to="/result">Result</Link>
+        </nav>
+        <div className="content">
+          <Routes />
+        </div>
+      </AppStyles>
+    </ApolloProvider>
   </Router>
 )
 
