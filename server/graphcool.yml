@@ -24,6 +24,11 @@ functions:
       code: src/hello.js
     type: resolver
     schema: src/hello.graphql
+  voteCard:
+    handler:
+      code: src/voteCard.js
+    type: resolver
+    schema: src/voteCard.graphql
 
 
 # Model/Relation permissions are used to limit the API access
