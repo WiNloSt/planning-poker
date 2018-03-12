@@ -69,7 +69,6 @@ export default compose(
       this.props.data.subscribeToMore({
         document: cardSubscription,
         updateQuery: (prev, { subscriptionData }) => {
-          console.log(prev, subscriptionData)
           if (!subscriptionData.data) return prev
           const data = subscriptionData.data
           if (data.Card.mutation === 'CREATED') {
