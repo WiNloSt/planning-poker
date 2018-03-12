@@ -2,3 +2,4 @@ targets:
   prod: shared-ap-northeast-1/cjeml1rny28ak0169qoh19mx6
   default: prod
   local: local/cjen1300p00060109iq3cif4j
+  office: local/cjensthuz00080135y6aka3gb

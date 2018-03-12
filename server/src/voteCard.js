@@ -9,24 +9,32 @@ export default async event => {
     const { cardValue } = event.data
 
     const { Card } = await api.request(`
-    query {
-       Card(value: ${cardValue}) {
-        id
-        value
-        count
+      query {
+        Card(value: ${cardValue}) {
+          id
+        }
       }
-    }
     `)
 
-    return api.request(`
-    mutation {
-      data: updateCard(id: "${Card.id}", count: ${Card.count + 1}) {
-        id
-        value
-        count
+    const { createVote } = await api.request(`
+      mutation {
+        createVote(cardId:"${Card.id}" ) {
+          id
+          card {
+            _votesMeta {
+              count
+            }
+          }
+        } 
       }
-    }
     `)
+
+    return {
+      data: {
+        id: createVote.id,
+        count: createVote.card._votesMeta.count,
+      },
+    }
   } catch (e) {
     console.log(e)
     return {

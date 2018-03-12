@@ -1,9 +1,8 @@
-type CardPayload {
-  id: ID
-  value: Int!
+type VotePayload {
+  id: ID!
   count: Int!
 }
 
 extend type Mutation {
-  voteCard(cardValue: Int!): CardPayload
+  voteCard(cardValue: Int!): VotePayload
 }
