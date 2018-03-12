@@ -2,6 +2,9 @@ import React from 'react'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import { lifecycle } from 'recompose'
+import * as R from 'ramda'
+
+import { Button } from '../components/Buttons'
 
 const Card = ({ card }) => (
   <div>
@@ -9,15 +12,35 @@ const Card = ({ card }) => (
   </div>
 )
 
-const Component = ({ data, mutate }) => (
-  <React.Fragment>
-    <h1>Result</h1>
-    <div>
-      {data.loading ? 'loading...' : data.allCards.map(card => <Card key={card.id} card={card} />)}
-    </div>
-    <button onClick={mutate}>Delete all votes</button>
-  </React.Fragment>
-)
+const formatDecimal = num => Math.round(num * 100) / 100
+
+const Component = ({ data, mutate }) => {
+  console.log(R)
+  const { allCards } = data
+  return (
+    <React.Fragment>
+      <h1>Result</h1>
+      <div>
+        {data.loading ? (
+          'loading...'
+        ) : (
+          <React.Fragment>
+            {allCards.map(card => <Card key={card.id} card={card} />)}
+            <hr />
+            averge:{' '}
+            {R.compose(
+              formatDecimal,
+              R.divide(R.__, R.compose(R.sum, R.map(card => card._votesMeta.count))(allCards)),
+              R.sum,
+              R.map(card => card.value * card._votesMeta.count)
+            )(allCards) || 0}
+          </React.Fragment>
+        )}
+      </div>
+      <Button onClick={mutate}>Delete all votes</Button>
+    </React.Fragment>
+  )
+}
 
 const withQuery = graphql(
   gql`

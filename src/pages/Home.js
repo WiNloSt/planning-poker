@@ -1,13 +1,7 @@
 import React from 'react'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
-import styled from 'styled-components'
-
-const Button = styled.button`
-  height: 3rem;
-  width: 5rem;
-  margin-right: 2rem;
-`
+import { Button } from '../components/Buttons'
 
 const Card = ({ card, onClick }) => <Button onClick={onClick}>{card.value}</Button>
 
