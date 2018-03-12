@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const Card = ({ card }) => (
@@ -8,10 +8,12 @@ const Card = ({ card }) => (
   </div>
 )
 
-const Component = ({ data: { loading, allCards } }) => (
+const Component = ({ data: { loading, allCards }, mutate }) => (
   <React.Fragment>
+    {console.log(mutate)}
     <h1>Result</h1>
     <div>{loading ? 'loading...' : allCards.map(card => <Card key={card.id} card={card} />)}</div>
+    <button onClick={mutate}>Delete all votes</button>
   </React.Fragment>
 )
 
@@ -27,4 +29,14 @@ const withQuery = graphql(gql`
   }
 `)
 
-export default withQuery(Component)
+const withMutation = graphql(
+  gql`
+    mutation {
+      deleteVotes {
+        count
+      }
+    }
+  `
+)
+
+export default compose(withQuery, withMutation)(Component)
