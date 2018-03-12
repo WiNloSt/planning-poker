@@ -19,30 +19,19 @@ const Component = ({ data, mutate }) => (
   </React.Fragment>
 )
 
-const withQuery = graphql(gql`
-  {
-    allCards {
-      id
-      value
-      _votesMeta {
-        count
-      }
-    }
-  }
-`)
-
-const voteSubscription = gql`
-  subscription updateCard {
-    Card(filter: { mutation_in: [UPDATED] }) {
-      node {
+const withQuery = graphql(
+  gql`
+    {
+      allCards {
         id
+        value
         _votesMeta {
           count
         }
       }
     }
-  }
-`
+  `
+)
 
 const withMutation = graphql(
   gql`
@@ -51,24 +40,51 @@ const withMutation = graphql(
         count
       }
     }
-  `,
-  {
-    props: props => ({
-      ...props,
-      subscribeToNewVotes: () =>
-        props.ownProps.data.subscribeToMore({
-          document: voteSubscription,
-        }),
-    }),
-  }
+  `
 )
+
+const cardSubscription = gql`
+  subscription updateCard {
+    Card(filter: { mutation_in: [CREATED, UPDATED, DELETED] }) {
+      node {
+        id
+        value
+        _votesMeta {
+          count
+        }
+      }
+      mutation
+      previousValues {
+        id
+      }
+    }
+  }
+`
 
 export default compose(
   withQuery,
   withMutation,
   lifecycle({
     componentDidMount () {
-      this.props.subscribeToNewVotes()
+      this.props.data.subscribeToMore({
+        document: cardSubscription,
+        updateQuery: (prev, { subscriptionData }) => {
+          console.log(prev, subscriptionData)
+          if (!subscriptionData.data) return prev
+          const data = subscriptionData.data
+          if (data.Card.mutation === 'CREATED') {
+            return {
+              allCards: prev.allCards.concat(data.Card.node),
+            }
+          }
+          if (data.Card.mutation === 'DELETED') {
+            return {
+              allCards: prev.allCards.filter(card => card.id !== data.Card.previousValues.id),
+            }
+          }
+          return prev
+        },
+      })
     },
   })
 )(Component)

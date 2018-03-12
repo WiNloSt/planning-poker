@@ -1,11 +1,58 @@
 import React from 'react'
-import { withSiteData } from 'react-static'
-//
-import logoImg from '../logo.png'
+import { graphql, compose } from 'react-apollo'
+import gql from 'graphql-tag'
+import styled from 'styled-components'
 
-export default withSiteData(() => (
+const Button = styled.button`
+  height: 3rem;
+  width: 5rem;
+  margin-right: 2rem;
+`
+
+const Card = ({ card, onClick }) => <Button onClick={onClick}>{card.value}</Button>
+
+const Component = ({ allCards, voteCard }) => (
   <div>
-    <h1 style={{ textAlign: 'center' }}>Welcome to</h1>
-    <img src={logoImg} alt="" />
+    {allCards.loading
+      ? 'loading...'
+      : allCards.allCards.map(card => (
+        <Card
+          key={card.id}
+          card={card}
+          onClick={() => {
+            voteCard({ variables: { cardValue: card.value } })
+          }}
+        />
+      ))}
   </div>
-))
+)
+
+const withAllCards = graphql(
+  gql`
+    {
+      allCards {
+        id
+        value
+        _votesMeta {
+          count
+        }
+      }
+    }
+  `,
+  {
+    name: 'allCards',
+  }
+)
+
+const withVoteCard = graphql(
+  gql`
+    mutation voteCard($cardValue: Int!) {
+      voteCard(cardValue: $cardValue) {
+        id
+      }
+    }
+  `,
+  { name: 'voteCard' }
+)
+
+export default compose(withAllCards, withVoteCard)(Component)

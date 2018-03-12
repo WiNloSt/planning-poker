@@ -10,20 +10,30 @@ export default async event => {
       {
         allVotes {
           id
+          card {
+            id
+          }
         }
       }
     `)
 
     await Promise.all(
-      allVotes.map(vote =>
+      allVotes.map(vote => {
         api.request(`
-        mutation {
-          deleteVote(id: "${vote.id}") {
-            id
+          mutation {
+            updateCard(id: "${vote.card.id}", dummy: "updated") {
+              id
+            }
           }
-        }
-      `)
-      )
+        `)
+        return api.request(`
+          mutation {
+            deleteVote(id: "${vote.id}") {
+              id
+            }
+          }
+        `)
+      })
     )
 
     return {
