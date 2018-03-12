@@ -29,6 +29,15 @@ export default async event => {
       }
     `)
 
+    // force triggering Card subscription on relation changes
+    api.request(`
+      mutation {
+        updateCard(id:"${Card.id}", dummy: "updated" ) {
+          id
+        } 
+      }
+    `)
+
     return {
       data: {
         id: createVote.id,

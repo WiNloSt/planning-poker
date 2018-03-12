@@ -2,6 +2,7 @@ type Card @model {
   id: ID! @isUnique
   value: Int! @isUnique
   votes: [Vote!]! @defaultValue(value: []) @relation(name: "CardVotes")
+  dummy: String
 }
 
 type Vote @model {

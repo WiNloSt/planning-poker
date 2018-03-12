@@ -1,6 +1,7 @@
 import React from 'react'
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
+import { lifecycle } from 'recompose'
 
 const Card = ({ card }) => (
   <div>
@@ -8,11 +9,12 @@ const Card = ({ card }) => (
   </div>
 )
 
-const Component = ({ data: { loading, allCards }, mutate }) => (
+const Component = ({ data, mutate }) => (
   <React.Fragment>
-    {console.log(mutate)}
     <h1>Result</h1>
-    <div>{loading ? 'loading...' : allCards.map(card => <Card key={card.id} card={card} />)}</div>
+    <div>
+      {data.loading ? 'loading...' : data.allCards.map(card => <Card key={card.id} card={card} />)}
+    </div>
     <button onClick={mutate}>Delete all votes</button>
   </React.Fragment>
 )
@@ -29,6 +31,19 @@ const withQuery = graphql(gql`
   }
 `)
 
+const voteSubscription = gql`
+  subscription updateCard {
+    Card(filter: { mutation_in: [UPDATED] }) {
+      node {
+        id
+        _votesMeta {
+          count
+        }
+      }
+    }
+  }
+`
+
 const withMutation = graphql(
   gql`
     mutation {
@@ -36,7 +51,24 @@ const withMutation = graphql(
         count
       }
     }
-  `
+  `,
+  {
+    props: props => ({
+      ...props,
+      subscribeToNewVotes: () =>
+        props.ownProps.data.subscribeToMore({
+          document: voteSubscription,
+        }),
+    }),
+  }
 )
 
-export default compose(withQuery, withMutation)(Component)
+export default compose(
+  withQuery,
+  withMutation,
+  lifecycle({
+    componentDidMount () {
+      this.props.subscribeToNewVotes()
+    },
+  })
+)(Component)
