@@ -19,16 +19,16 @@ types: ./types.graphql
 
 
 functions:
-  hello:
-    handler:
-      code: src/hello.js
-    type: resolver
-    schema: src/hello.graphql
   voteCard:
     handler:
       code: src/voteCard.js
     type: resolver
     schema: src/voteCard.graphql
+  deleteVotes:
+    handler:
+      code: src/deleteVotes.js
+    type: resolver
+    schema: src/deleteVotes.graphql
 
 
 # Model/Relation permissions are used to limit the API access

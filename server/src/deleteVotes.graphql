@@ -1,0 +1,7 @@
+type DeleteVotePayload {
+  count: Int!
+}
+
+extend type Mutation {
+  deleteVotes: DeleteVotePayload
+}
