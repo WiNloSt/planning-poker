@@ -20,7 +20,7 @@ const Component = ({ data, mutate }) => {
     <React.Fragment>
       <h1>Result</h1>
       <div>
-        {data.loading ? (
+        {data.loading && !allCards ? (
           'loading...'
         ) : (
           <React.Fragment>
@@ -52,7 +52,12 @@ const withQuery = graphql(
         }
       }
     }
-  `
+  `,
+  {
+    options: {
+      fetchPolicy: 'cache-and-network',
+    },
+  }
 )
 
 const withMutation = graphql(
