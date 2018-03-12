@@ -3,8 +3,8 @@ import styled from 'styled-components'
 export const Button = styled.button`
   @media (max-width: 480px) {
     width: 100%;
-    margin: 0.3rem 0;
     height: 4rem;
+    margin: 0.3em 0;
   }
 
   &:hover {
@@ -20,15 +20,17 @@ export const Button = styled.button`
     border: 0;
   }
 
-  font-size: 2rem;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 1em;
   color: white;
   user-select: none;
   outline: none;
-  border-radius: 1rem;
+  border-radius: 0.8em;
   border: none;
   background: #53d1fc;
-  height: 3rem;
-  width: 5rem;
-  margin-right: 2rem;
+  height: 3em;
+  min-width: 5em;
+  margin: 1em 0;
+  padding: 0 2em;
+  margin-right: 2em;
 `

@@ -15,7 +15,6 @@ const Card = ({ card }) => (
 const formatDecimal = num => Math.round(num * 100) / 100
 
 const Component = ({ data, mutate }) => {
-  console.log(R)
   const { allCards } = data
   return (
     <React.Fragment>
