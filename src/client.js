@@ -11,10 +11,7 @@ const httpLink = new HttpLink({
   uri: 'https://api.graph.cool/simple/v1/cjeml1rny28ak0169qoh19mx6',
 })
 
-let link
-if (process.env.REACT_STATIC_ENV === 'production') {
-  link = httpLink
-} else {
+export const createClient = () => {
   const wsLink = new WebSocketLink({
     uri: 'wss://subscriptions.ap-northeast-1.graph.cool/v1/cjeml1rny28ak0169qoh19mx6',
     options: {
@@ -22,7 +19,7 @@ if (process.env.REACT_STATIC_ENV === 'production') {
     },
   })
 
-  link = split(
+  const link = split(
     ({ query }) => {
       const { kind, operation } = getMainDefinition(query)
       return kind === 'OperationDefinition' && operation === 'subscription'
@@ -30,9 +27,14 @@ if (process.env.REACT_STATIC_ENV === 'production') {
     wsLink,
     httpLink
   )
+
+  return new ApolloClient({
+    link,
+    cache: new InMemoryCache(),
+  })
 }
 
 export const client = new ApolloClient({
-  link,
+  link: httpLink,
   cache: new InMemoryCache(),
 })

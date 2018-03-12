@@ -5,7 +5,7 @@ import { hot } from 'react-hot-loader'
 import Routes from 'react-static-routes'
 import { ApolloProvider } from 'react-apollo'
 
-import { client } from './client'
+import { client, createClient } from './client'
 
 injectGlobal`
   body {
@@ -45,20 +45,36 @@ const AppStyles = styled.div`
   }
 `
 
-const App = () => (
-  <Router>
-    <ApolloProvider client={client}>
-      <AppStyles>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/result">Result</Link>
-        </nav>
-        <div className="content">
-          <Routes />
-        </div>
-      </AppStyles>
-    </ApolloProvider>
-  </Router>
-)
+class App extends React.Component {
+  state = {
+    client,
+  }
+
+  componentDidMount () {
+    /* eslint-disable */
+    this.setState({
+      client: createClient()
+    })
+    /* eslint-enable */
+  }
+
+  render () {
+    return (
+      <Router>
+        <ApolloProvider client={this.state.client}>
+          <AppStyles>
+            <nav>
+              <Link to="/">Home</Link>
+              <Link to="/result">Result</Link>
+            </nav>
+            <div className="content">
+              <Routes />
+            </div>
+          </AppStyles>
+        </ApolloProvider>
+      </Router>
+    )
+  }
+}
 
 export default hot(module)(App)

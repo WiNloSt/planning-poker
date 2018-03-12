@@ -93,6 +93,7 @@ export default compose(
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev
           const data = subscriptionData.data
+          if (!data.Card) return prev
           if (data.Card.mutation === 'CREATED') {
             return {
               allCards: prev.allCards.concat(data.Card.node),
